@@ -2,6 +2,8 @@
 
 Function decorator you can use to cache the results of your function calls. Works similarly to the `functools.cache` decorator but maintains state between different runs.
 
+Assumes the return value of the function is JSON serializable
+
 # Usage
 
 ```python

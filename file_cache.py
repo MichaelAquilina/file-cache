@@ -1,3 +1,4 @@
+import json
 import functools
 import hashlib
 import time
@@ -8,7 +9,7 @@ from typing import Any, Callable
 # caches data to a local file
 # for re-use between runs when working with urls
 # assumes all arguments can be turned into a string
-# and that the returned data is also a string
+# and that the returned data is JSON serializable
 def file_cache(
     log_misses: bool = False, log_hits: bool = False, log_time: bool = False
 ) -> Callable:
@@ -41,14 +42,14 @@ def file_cache(
                 if log_hits:
                     log_message = (namespace, "Cached", key)
 
-                output = path.read_text()
+                output = json.loads(path.read_text())
             else:
                 misses += 1
                 if log_misses:
                     log_message = (namespace, "Not cached:", key)
 
                 result = func(*arg, **kwargs)
-                path.write_text(result)
+                path.write_text(json.dumps(result))
                 output = result
 
             hit_rate = 100 * (hits / (hits + misses))
